@@ -99,3 +99,11 @@ modules.xml
 
 # Ignore VS Code files
 .vscode/
+
+# Ignore .metdata
+.metadata/**/*
+
+# Ignore the above that's in the app folder, too
+app/.classpath
+app/.project
+app/.settings/**/*
