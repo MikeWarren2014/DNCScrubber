@@ -4,7 +4,7 @@ public final class NumberUtils {
 	public static int ParseInt(String string) { 
 		if ((string == null) || (string.length() == 0))
 			return 0;
-		return Integer.parseInt(string);
+		return Integer.parseInt(string.replaceAll(/\.\d+/, ''));
 	}
 
 	public static int ExtractNumber(String string) {

@@ -3,6 +3,7 @@ package com.mikebuyshouses.dncscrubber.csvmanip
 import com.mikebuyshouses.dncscrubber.constants.Constants
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
+import com.mikebuyshouses.dncscrubber.utils.StringUtils
 import com.opencsv.CSVWriter
 import com.opencsv.bean.StatefulBeanToCsv
 import com.opencsv.bean.StatefulBeanToCsvBuilder
@@ -13,7 +14,17 @@ public class CSVSheetWriter extends CSVIO {
     public void write(List<BaseDataRowModel> csvData, String outputFileName) {
         this.prepareDataRowModels(csvData);
 
-        FileWriter fileWriter = new FileWriter(outputFileName);
+        File outputFile = new File(outputFileName);
+        if (!outputFile.exists()){
+            File parentDirectory = outputFile.getParentFile();
+            if (parentDirectory == null)
+                parentDirectory = new File('..')
+
+            parentDirectory.mkdirs();
+            outputFile.createNewFile();
+        }
+
+        FileWriter fileWriter = new FileWriter(outputFile);
 
         new CSVWriter(fileWriter).withCloseable { CSVWriter csvWriter ->
             // Create StatefulBeanToCsv
@@ -43,7 +54,7 @@ public class CSVSheetWriter extends CSVIO {
                 dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.NumberKeyPart}".toString(),
                     childModel.phoneNumber);
                 dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.DateKeyPart}".toString(),
-                    childModel.date.toString());
+                    StringUtils.NullableObjectToString(childModel.date));
             }
         }
     }

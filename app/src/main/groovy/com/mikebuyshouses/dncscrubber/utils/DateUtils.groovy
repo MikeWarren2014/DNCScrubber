@@ -12,6 +12,7 @@ public final class DateUtils {
             "yyyy-MM-dd'T'HH:mm:ssX",
             "yyyy-MM-dd'T'HH:mm:ss",
             "yyyy-MM-dd",
+            "EEE MMM dd HH:mm:ss zzz yyyy",
         ];
 
         for (String formatString : formatStrings) {
