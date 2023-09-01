@@ -1,7 +1,7 @@
 package com.mikebuyshouses.dncscrubber.models
 
 import com.mikebuyshouses.dncscrubber.constants.Constants
-import com.mikebuyshouses.dncscrubber.csvmanip.YesNoBooleanConverter
+import com.mikebuyshouses.dncscrubber.datamanip.YesNoBooleanConverter
 import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
 import com.mikebuyshouses.dncscrubber.utils.DateUtils
 import com.mikebuyshouses.dncscrubber.utils.NumberUtils

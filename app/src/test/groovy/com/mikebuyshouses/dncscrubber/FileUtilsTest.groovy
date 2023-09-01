@@ -12,7 +12,7 @@ import spock.lang.Specification
 class FileUtilsTest extends Specification {
     def "WriteToCsv() should handle the null Cells in a Row"() {
         setup:
-        File excelFile = new File("src/test/resources/testFile.xlsx");
+        File excelFile = new File("${FileUtils.TestDirectoryPath}/testFile.xlsx");
         excelFile.createNewFile();
 
         excelFile.withOutputStream {  outputStream ->
@@ -35,7 +35,7 @@ class FileUtilsTest extends Specification {
 
 
         when:
-        File testCsvFile = new File("src/test/resources/testNullCells.csv");
+        File testCsvFile = new File("${FileUtils.TestDirectoryPath}/testNullCells.csv");
         testCsvFile.createNewFile();
 
         testCsvFile.withWriter { BufferedWriter bufferedWriter ->
@@ -65,7 +65,7 @@ class FileUtilsTest extends Specification {
 
     def "ExcelToCsv() should return a CSV File whose rows contain the same number of commas"() {
         setup:
-        File excelFile = new File("src/test/resources/testFile.xlsx");
+        File excelFile = new File("${FileUtils.TestDirectoryPath}/testFile.xlsx");
         excelFile.createNewFile();
 
         excelFile.withOutputStream {  outputStream ->
@@ -88,7 +88,7 @@ class FileUtilsTest extends Specification {
 
 
         when:
-        File testCsvFile = new File("src/test/resources/testNullCells.csv");
+        File testCsvFile = new File("${FileUtils.TestDirectoryPath}/testNullCells.csv");
         testCsvFile.createNewFile();
 
         testCsvFile.withWriter { BufferedWriter bufferedWriter ->

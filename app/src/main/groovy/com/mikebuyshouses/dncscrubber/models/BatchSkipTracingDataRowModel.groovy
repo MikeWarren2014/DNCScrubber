@@ -1,6 +1,6 @@
 package com.mikebuyshouses.dncscrubber.models
 
-import com.mikebuyshouses.dncscrubber.csvmanip.YesNoBooleanConverter
+import com.mikebuyshouses.dncscrubber.datamanip.YesNoBooleanConverter
 import com.opencsv.bean.CsvBindAndJoinByName
 import com.opencsv.bean.CsvBindByName
 import com.opencsv.bean.CsvCustomBindByName

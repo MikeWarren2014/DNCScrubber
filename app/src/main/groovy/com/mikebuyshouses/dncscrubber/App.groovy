@@ -5,7 +5,9 @@ package com.mikebuyshouses.dncscrubber
 
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetReader
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetWriter
-import com.mikebuyshouses.dncscrubber.csvmanip.DNCScrubber
+import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
+import com.mikebuyshouses.dncscrubber.filemanip.DataWriter
+import com.mikebuyshouses.dncscrubber.filemanip.ExcelDataWriter
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
 import com.mikebuyshouses.dncscrubber.utils.CommandLineParser
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
@@ -22,10 +24,9 @@ class App {
         println "Scrubbing the DNC records...";
         List<BatchSkipTracingDataRowModel> scrubbedCsvData = new DNCScrubber().scrubCsvData(csvData);
 
-        // TODO: We need a feature to output to Excel files. To do that, we're going to need to somehow use the OpenCSV bean annotations...
         println "Outputting to output file '${parser.getOutputFilename()}'..."
-        new CSVSheetWriter(BatchSkipTracingDataRowModel.class)
-            .write(scrubbedCsvData, this.GetOutputCsvFileName(parser));
+        this.GetDataWriter(parser.getOutputFilename())
+            .write(scrubbedCsvData, parser.getOutputFilename());
 
         println "All done!";
     }
@@ -38,11 +39,17 @@ class App {
                 .getPath();
     }
 
-    private static String GetOutputCsvFileName(CommandLineParser parser) {
-        if (parser.getOutputFilename().endsWith(".csv"))
-            return parser.getOutputFilename();
+    private static DataWriter GetDataWriter(String outputFileName) {
+        final String fileExtension = outputFileName.substring(outputFileName.lastIndexOf('.') + 1);
 
-        return "${FileUtils.RemoveExtensionFromFileName(parser.getOutputFilename())}.csv";
+        switch (fileExtension) {
+            case "csv":
+                return new CSVSheetWriter(BatchSkipTracingDataRowModel.class);
+            case "xlsx":
+                return new ExcelDataWriter();
+        }
+
+        throw new IllegalArgumentException("DataWriter for file with extension '${fileExtension}' not yet implemented!")
     }
 }
 

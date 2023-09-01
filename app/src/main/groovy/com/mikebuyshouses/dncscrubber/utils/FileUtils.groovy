@@ -6,6 +6,8 @@ import org.apache.poi.ss.usermodel.Sheet
 import org.apache.poi.ss.usermodel.WorkbookFactory
 
 public final class FileUtils {
+    public static final String TestDirectoryPath = "src/test/resources";
+
     public static File ExcelToCsv(String excelFileName) {
         File excelFile = new File(excelFileName),
             tmpCsvFile = File.createTempFile("tmp_${this.RemoveExtensionFromFileName(excelFileName)}",
@@ -42,5 +44,19 @@ public final class FileUtils {
             csvWriter.append(',');
         }
         csvWriter.append('\n');
+    }
+
+    public static File CreateFileIfNotExists(String fileName) {
+        File file = new File(fileName);
+        if (!file.exists()){
+            File parentDirectory = file.getParentFile();
+            if (parentDirectory == null)
+                parentDirectory = new File('..')
+
+            parentDirectory.mkdirs();
+            file.createNewFile();
+        }
+
+        return file;
     }
 }
