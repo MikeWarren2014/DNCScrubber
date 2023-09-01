@@ -1,4 +1,4 @@
-package com.mikebuyshouses.dncscrubber.csvmanip
+package com.mikebuyshouses.dncscrubber.datamanip
 
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel

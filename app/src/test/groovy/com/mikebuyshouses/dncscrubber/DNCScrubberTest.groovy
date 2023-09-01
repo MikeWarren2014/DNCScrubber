@@ -1,6 +1,6 @@
 package com.mikebuyshouses.dncscrubber
 
-import com.mikebuyshouses.dncscrubber.csvmanip.DNCScrubber
+import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
 import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
