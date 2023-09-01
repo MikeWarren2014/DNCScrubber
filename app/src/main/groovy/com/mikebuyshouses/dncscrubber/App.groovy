@@ -49,7 +49,7 @@ class App {
                 return new ExcelDataWriter();
         }
 
-        throw new IllegalArgumentException("DataWriter for file with extension .'${fileExtension}' not yet implemented!")
+        throw new IllegalArgumentException("DataWriter for file with extension '${fileExtension}' not yet implemented!")
     }
 }
 
