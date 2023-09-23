@@ -62,16 +62,16 @@ class PhoneModelTest extends Specification {
 				('Phone3_Last_Seen'):[],
 				('Phone1_DNC'):["NO"],
 				('Phone10_Last_Seen'):[],
-				('Phone10_Number'):[3172830075],
+				('Phone10_Number'):[3175550075],
 				('Phone10_Score'):[93],
 				('Phone10_Type'):["Land Line"],
 				('Phone10_DNC'):["NO"],
 				('Phone1_Last_Seen'):[],
-				('Phone1_Number'):[3172830074],
-				('Phone2_Number'):[3179267430],
+				('Phone1_Number'):[3175550074],
+				('Phone2_Number'):[3175557430],
 				('Phone3_DNC'):["NO"],
 				('Phone2_Last_Seen'):[],
-				('Phone3_Number'):[3179265508]
+				('Phone3_Number'):[3175555508],
 		]
 
 		MultiValuedMap<String, Object> map = new ArrayListValuedHashMap<>()

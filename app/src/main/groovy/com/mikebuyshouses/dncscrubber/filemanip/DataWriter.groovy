@@ -2,14 +2,13 @@ package com.mikebuyshouses.dncscrubber.filemanip
 
 import com.mikebuyshouses.dncscrubber.constants.Constants
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetReader
-import com.mikebuyshouses.dncscrubber.datamanip.YesNoBooleanConverter;
+import com.mikebuyshouses.dncscrubber.datamanip.YesNoBooleanConverter
+import com.mikebuyshouses.dncscrubber.models.AddressModel
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
 import com.mikebuyshouses.dncscrubber.utils.StringUtils
-import org.apache.commons.collections4.multimap.ArrayListValuedHashMap;
-
-import java.util.List;
+import org.apache.commons.collections4.multimap.ArrayListValuedHashMap
 
 public trait DataWriter {
 
@@ -20,10 +19,10 @@ public trait DataWriter {
                 FileUtils.CreateFileIfNotExists(outputFileName));
     }
 
-    private void prepareDataRowModels(List<BaseDataRowModel> csvData) {
+    private void prepareDataRowModels(List<BaseDataRowModel> dataRowModels) {
         YesNoBooleanConverter booleanConverter = new YesNoBooleanConverter();
 
-        csvData.each { BaseDataRowModel dataRowModel ->
+        dataRowModels.each { BaseDataRowModel dataRowModel ->
             if (dataRowModel.rawPhoneData != null)
                 dataRowModel.rawPhoneData.clear();
             else
@@ -43,7 +42,24 @@ public trait DataWriter {
                 dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.DateKeyPart}".toString(),
                         StringUtils.NullableObjectToString(childModel.date));
             }
+
+            if (dataRowModel.rawAddressData == null)
+                dataRowModel.rawAddressData = new ArrayListValuedHashMap<>();
+
+            this.prepareRawAddressData(dataRowModel, dataRowModel.propertyAddressModel, Constants.InputPropertyPart);
+            this.prepareRawAddressData(dataRowModel, dataRowModel.mailingAddressModel, Constants.MailingPart);
         }
+    }
+
+    private void prepareRawAddressData(BaseDataRowModel model, AddressModel childAddressModel, String keyPrefix) {
+        model.rawAddressData.put("${keyPrefix}_Address".toString(),
+            childAddressModel.address);
+        model.rawAddressData.put("${keyPrefix}_City".toString(),
+            childAddressModel.city);
+        model.rawAddressData.put("${keyPrefix}_State".toString(),
+            childAddressModel.state);
+        model.rawAddressData.put("${keyPrefix}_Zip".toString(),
+            childAddressModel.zip);
     }
 
     public abstract void writeToFile(List<BaseDataRowModel> dataRowModels, File file);

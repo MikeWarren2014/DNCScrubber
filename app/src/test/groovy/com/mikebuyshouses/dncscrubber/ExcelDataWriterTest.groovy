@@ -5,16 +5,17 @@ import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
 import com.mikebuyshouses.dncscrubber.filemanip.ExcelDataWriter
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
+import com.mikebuyshouses.dncscrubber.models.TestDataRowModel
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
 import com.mikebuyshouses.dncscrubber.utils.StringUtils
 import org.apache.poi.ss.usermodel.*
 import spock.lang.Specification
 
 class ExcelDataWriterTest extends Specification {
-    def "write() should write all models to file"() {
+    def "writeToFile() should write all models to file"() {
         setup:
         List<BaseDataRowModel> models = [
-                new BaseDataRowModel(
+                new TestDataRowModel(
                         firstName: "Alice",
                         lastName: "Simmons",
                         childPhoneModels: [
@@ -32,7 +33,7 @@ class ExcelDataWriterTest extends Specification {
                                 ),
                         ],
                 ),
-                new BaseDataRowModel(
+                new TestDataRowModel(
                         firstName: "Bob",
                         lastName: "Rucker",
                         childPhoneModels: [
