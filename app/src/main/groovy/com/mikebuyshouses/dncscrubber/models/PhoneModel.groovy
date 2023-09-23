@@ -92,7 +92,7 @@ public class PhoneModel {
 				return aNum <=> bNum ?: a <=> b
 			}
 		sortedMapKeys.eachWithIndex({ String key, int idx ->
-			model = this.BuildPhoneModel(model, rawPhoneData, key);
+			model = this.BuildPhoneModel(model, rawPhoneData.get(key)[0], key);
 
 			if ((idx < sortedMapKeys.size() - 1) && 
 				(NumberUtils.ExtractNumber(sortedMapKeys[idx + 1]) == NumberUtils.ExtractNumber(sortedMapKeys[idx])))
@@ -107,9 +107,7 @@ public class PhoneModel {
 		return phoneModels;
 	}
 
-	private static PhoneModel BuildPhoneModel(PhoneModel originalModel, MultiValuedMap rawPhoneData, String key) { 
-		String rawValue = rawPhoneData.get(key)[0];
-
+	private static PhoneModel BuildPhoneModel(PhoneModel originalModel, Object rawValue, String key) {
 		if (key.contains(Constants.DncKeyPart)) {
 			originalModel.isDNC = new YesNoBooleanConverter().convertStringToBoolean(rawValue);
 

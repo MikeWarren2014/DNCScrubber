@@ -5,6 +5,7 @@ import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
+import com.mikebuyshouses.dncscrubber.models.TestDataRowModel
 import spock.lang.Specification
 
 class DNCScrubberTest extends Specification {
@@ -60,7 +61,7 @@ class DNCScrubberTest extends Specification {
 
     def "scrubDataRow() should successfully remove child PhoneModels"() {
         setup:
-        BaseDataRowModel model = new BaseDataRowModel(
+        TestDataRowModel model = new TestDataRowModel(
             firstName: "test",
             lastName: "user",
                 childPhoneModels: [
@@ -80,7 +81,7 @@ class DNCScrubberTest extends Specification {
         )
 
         when:
-        BaseDataRowModel cleanedModel = new DNCScrubber().scrubDataRow(model);
+        TestDataRowModel cleanedModel = (TestDataRowModel)new DNCScrubber().scrubDataRow(model);
 
         then:
         cleanedModel.childPhoneModels.size() == 1

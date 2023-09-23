@@ -18,8 +18,7 @@ class SpreadsheetUtilsTest extends Specification {
             new XSSFWorkbook().withCloseable { XSSFWorkbook workbook ->
                 Sheet sheet = workbook.createSheet();
                 Row headerRow = sheet.createRow(0),
-                    firstRow = sheet.createRow(1),
-                    secondRow = sheet.createRow(2);
+                    firstRow = sheet.createRow(1);
 
                 headerRow.createCell(0).setCellValue("First Name");
                 headerRow.createCell(1).setCellValue("Last Name");

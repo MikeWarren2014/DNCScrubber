@@ -6,4 +6,9 @@ public class TestDataRowModel extends BaseDataRowModel {
 
 	@CsvBindByName(column = "ID")
 	int id;
+
+	@Override
+	BaseDataRowModel buildChildAddressModels() {
+		return null
+	}
 }

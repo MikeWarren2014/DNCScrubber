@@ -41,7 +41,7 @@ public class CSVSheetReader extends CSVIO {
 			dataRowModel.with { BaseDataRowModel model ->
 				model.childPhoneModels = PhoneModel.ExtractFromRawPhoneData(model.rawPhoneData);
 
-				return model;
+				return model.buildChildAddressModels();
 			}
 		}
 
