@@ -32,4 +32,8 @@ class CSVSheetReaderTest extends Specification {
 		then:
 		result[0].rawPhoneData.size() == 4 * 5
 	}
-} 
+
+	def cleanupSpec() {
+		CSVSheetReader.FirstPhoneEntryNumber = 0;
+	}
+}

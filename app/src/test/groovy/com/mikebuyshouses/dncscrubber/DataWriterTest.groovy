@@ -1,7 +1,6 @@
 package com.mikebuyshouses.dncscrubber
 
 import com.mikebuyshouses.dncscrubber.constants.Constants
-import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetWriter
 import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
 import com.mikebuyshouses.dncscrubber.filemanip.TestDoubleDataWriter
 import com.mikebuyshouses.dncscrubber.models.AddressModel
@@ -79,11 +78,11 @@ class DataWriterTest extends Specification {
 
         when:
         dataWriter.write(csvData, "dummy.csv");
+        List<String> firstModelPhoneKeys = this.getMapKeysList(receivedArgs[0].rawPhoneData)
 
         then:
         receivedArgs.size() == 2
 
-        List<String> firstModelPhoneKeys = this.getMapKeysList(receivedArgs[0].rawPhoneData)
         firstModelPhoneKeys.find { String key -> key.startsWith("Phone0")} != null;
         firstModelPhoneKeys.find { String key -> key.startsWith("Phone1")} != null;
         firstModelPhoneKeys.find { String key -> key.startsWith("Phone2")} == null;

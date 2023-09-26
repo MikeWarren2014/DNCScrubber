@@ -3,6 +3,7 @@ package com.mikebuyshouses.dncscrubber
 import com.mikebuyshouses.dncscrubber.constants.Constants
 import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
 import com.mikebuyshouses.dncscrubber.filemanip.ExcelDataWriter
+import com.mikebuyshouses.dncscrubber.models.AddressModel
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
 import com.mikebuyshouses.dncscrubber.models.TestDataRowModel
@@ -32,6 +33,18 @@ class ExcelDataWriterTest extends Specification {
                                         phoneNumber: "3175550103",
                                 ),
                         ],
+                        propertyAddressModel: new AddressModel(
+                                address: "1001 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
+                        mailingAddressModel: new AddressModel(
+                                address: "1001 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
                 ),
                 new TestDataRowModel(
                         firstName: "Bob",
@@ -44,6 +57,18 @@ class ExcelDataWriterTest extends Specification {
                                         phoneNumber: "3176660101",
                                 ),
                         ],
+                        propertyAddressModel: new AddressModel(
+                                address: "10012 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
+                        mailingAddressModel: new AddressModel(
+                                address: "10012 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
                 ),
         ]
 
@@ -73,6 +98,7 @@ class ExcelDataWriterTest extends Specification {
             }
 
         then:
+        titleRowValues != null && titleRowValues.size() > 0;
         int firstPhoneCellIdx = titleRowValues.findIndexOf { String title -> return title == "Phone0_${Constants.NumberKeyPart}" }
         firstPhoneCellIdx != -1
         int secondPhoneCellIdx = titleRowValues.findIndexOf { String title -> return title == "Phone1_${Constants.NumberKeyPart}" }
