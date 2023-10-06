@@ -6,7 +6,7 @@ import com.amazonaws.services.lambda.runtime.RequestHandler
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent
 import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent
 import com.mikebuyshouses.dncscrubber.awsServices.models.RequestBodyModel
-import com.mikebuyshouses.dncscrubber.constants.Constants
+import com.mikebuyshouses.dncscrubber.awsServices.providers.PathProvider
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetReader
 import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
 import com.mikebuyshouses.dncscrubber.filemanip.DataWriterFactory
@@ -21,14 +21,11 @@ import java.nio.file.Paths
 
 class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
-    // TODO: may want to move this somewhere else
-    public static final String BucketName = "dnc-scrubber-bucket";
-
     public static final String MultipartContentType = "multipart/form-data";
+    PathProvider pathProvider = new PathProvider();
 
     @Override
     APIGatewayProxyResponseEvent handleRequest(APIGatewayProxyRequestEvent requestEvent, Context context) {
-        // TODO: we need to make sure that the requestEvent is multipart form-data, and that it contains at least the inputFile and outputFileExtension
         LambdaLogger logger = context.getLogger()
 
         // validate the request
@@ -71,7 +68,7 @@ class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
         FileUpload.parse(bodyBytes, request.getHeaders().get('Content-Type'))
             .each { FileItem fileItem ->
                 if (fileItem.getFieldName().equals("inputFile")) {
-                    File inputFile = FileUtils.CreateFileIfNotExists("${Constants.EfsMountPath}/${FileUtils.InputPathPart}/${fileItem.getName()}");
+                    File inputFile = FileUtils.CreateFileIfNotExists("${this.pathProvider.getBaseInputPath()}/${fileItem.getName()}");
                     fileItem.write(inputFile);
                     model.inputFile = inputFile;
                     return;
@@ -100,7 +97,7 @@ class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
         List<BatchSkipTracingDataRowModel> scrubbedCsvData = new DNCScrubber().scrubCsvData(csvData);
 
         final String outputFileName = requestBodyModel.inputFile.getName()
-                .replace("${Constants.EfsMountPath}/${FileUtils.InputPathPart}", "${Constants.EfsMountPath}/${FileUtils.OutputPathPart}")
+                .replace(this.pathProvider.getBaseInputPath(), this.pathProvider.getBaseOutputPath())
                 .replace(FileUtils.GetFileExtension(requestBodyModel.inputFile), requestBodyModel.outputFileExtension);
 
         logger.log("Outputting to output file '${outputFileName}'...");
