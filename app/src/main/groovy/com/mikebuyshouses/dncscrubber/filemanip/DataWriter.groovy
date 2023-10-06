@@ -15,6 +15,7 @@ public trait DataWriter {
     public void write(List<BaseDataRowModel> dataRowModels, String outputFileName) {
         this.prepareDataRowModels(dataRowModels);
 
+        // TODO: we may need to phase this out for some S3/OutputStream stuff
         this.writeToFile(dataRowModels,
                 FileUtils.CreateFileIfNotExists(outputFileName));
     }
@@ -62,5 +63,6 @@ public trait DataWriter {
             childAddressModel.zip);
     }
 
+    // TODO: we may need to phase this out for some S3/OutputStream stuff
     public abstract void writeToFile(List<BaseDataRowModel> dataRowModels, File file);
 }

@@ -6,6 +6,16 @@
  * User Manual available at https://docs.gradle.org/7.2/userguide/building_java_projects.html
  */
 
+buildscript {
+    repositories {
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath "gradle.plugin.com.github.johnrengelman:shadow:7.1.2"
+    }
+}
+
 plugins {
     // Apply the groovy Plugin to add support for Groovy.
     id 'groovy'
@@ -13,6 +23,9 @@ plugins {
     // Apply the application plugin to add support for building a CLI application in Java.
     id 'application'
 }
+
+apply plugin: 'java'
+apply plugin: 'com.github.johnrengelman.shadow'
 
 repositories {
     // Use Maven Central for resolving dependencies.
@@ -26,11 +39,16 @@ dependencies {
     // This dependency is used by the application.
     implementation 'com.google.guava:guava:30.1.1-jre'
 
-    // https://mvnrepository.com/artifact/commons-fileupload/commons-fileupload
-    implementation 'commons-fileupload:commons-fileupload:1.5'
-
     // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-core
     implementation 'com.amazonaws:aws-lambda-java-core:1.2.3'
+
+    // https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-events
+    implementation 'com.amazonaws:aws-lambda-java-events:3.11.3'
+
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    implementation 'javax.servlet:javax.servlet-api:3.1.0'
+
+    implementation 'org.javadelight:delight-fileupload:0.0.6'
 
     implementation platform('software.amazon.awssdk:bom:2.20.56')
     implementation 'software.amazon.awssdk:s3'
@@ -50,6 +68,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
     implementation 'org.apache.poi:poi-ooxml:5.2.3'
 
+    // https://mvnrepository.com/artifact/com.sayweee/spock.mockfree
+    implementation 'com.sayweee:spock.mockfree:1.0.3'
 
 }
 
@@ -62,3 +82,6 @@ tasks.named('test') {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
 }
+//test {
+//    useJUnitPlatform()
+//}

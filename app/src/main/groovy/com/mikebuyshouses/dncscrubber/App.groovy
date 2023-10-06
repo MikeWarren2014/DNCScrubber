@@ -7,6 +7,7 @@ import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetReader
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetWriter
 import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
 import com.mikebuyshouses.dncscrubber.filemanip.DataWriter
+import com.mikebuyshouses.dncscrubber.filemanip.DataWriterFactory
 import com.mikebuyshouses.dncscrubber.filemanip.ExcelDataWriter
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
 import com.mikebuyshouses.dncscrubber.utils.CommandLineParser
@@ -32,24 +33,11 @@ class App {
     }
 
     private static String GetInputCsvFileName(CommandLineParser parser) {
-        if (parser.getInputFilename().endsWith(".csv"))
-            return parser.getInputFilename();
-
-        return FileUtils.ExcelToCsv(parser.getInputFilename())
-                .getPath();
+        return FileUtils.GetInputCsvFileName(parser.getInputFilename());
     }
 
     private static DataWriter GetDataWriter(String outputFileName) {
-        final String fileExtension = outputFileName.substring(outputFileName.lastIndexOf('.') + 1);
-
-        switch (fileExtension) {
-            case "csv":
-                return new CSVSheetWriter(BatchSkipTracingDataRowModel.class);
-            case "xlsx":
-                return new ExcelDataWriter();
-        }
-
-        throw new IllegalArgumentException("DataWriter for file with extension '${fileExtension}' not yet implemented!")
+        return DataWriterFactory.GetDataWriter(outputFileName.substring(outputFileName.lastIndexOf('.') + 1));
     }
 }
 
