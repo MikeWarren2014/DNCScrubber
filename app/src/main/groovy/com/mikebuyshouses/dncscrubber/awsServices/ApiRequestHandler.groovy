@@ -59,9 +59,8 @@ class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
     }
 
     RequestBodyModel parseRequestEvent(APIGatewayProxyRequestEvent request) {
-        byte[] bodyBytes = request.getBody().getBytes("UTF-8");
-        if (request.getIsBase64Encoded())
-            bodyBytes = Base64.getDecoder().decode(bodyBytes);
+        byte[] bodyBytes = Base64.getDecoder()
+                .decode(request.getBody().getBytes("UTF-8"));
 
         RequestBodyModel model = new RequestBodyModel();
 
