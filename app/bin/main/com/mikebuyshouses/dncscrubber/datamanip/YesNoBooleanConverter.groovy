@@ -1,4 +1,4 @@
-package com.mikebuyshouses.dncscrubber.csvmanip
+package com.mikebuyshouses.dncscrubber.datamanip
 
 import com.opencsv.bean.customconverter.ConverterLanguageToBoolean
 

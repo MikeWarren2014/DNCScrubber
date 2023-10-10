@@ -1,7 +1,12 @@
 package com.mikebuyshouses.dncscrubber.utils
 
 public final class NumberUtils { 
-	public static int ParseInt(String string) { 
+	public static int ParseInt(Object value) {
+		if (value instanceof Integer)
+			return value;
+
+		final String string = (String)value;
+
 		if ((string == null) || (string.length() == 0))
 			return 0;
 		return Integer.parseInt(string.replaceAll(/\.\d+/, ''));

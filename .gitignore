@@ -107,3 +107,6 @@ modules.xml
 app/.classpath
 app/.project
 app/.settings/**/*
+
+# Ignore SAM build artifacts
+**/.aws-sam/

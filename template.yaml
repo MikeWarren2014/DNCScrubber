@@ -1,0 +1,12 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  lamda local demo
+
+Resources:
+  dncScrbberLambda:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: app/src/main/groovy/
+      Handler: com.mikebuyshouses.dncScrubber.awsServices.ApiRequestHandler::handleRequest
+      Runtime: Java 17

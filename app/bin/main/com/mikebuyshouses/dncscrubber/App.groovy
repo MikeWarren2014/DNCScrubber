@@ -4,8 +4,8 @@
 package com.mikebuyshouses.dncscrubber
 
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetReader
-import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetWriter
-import com.mikebuyshouses.dncscrubber.csvmanip.DNCScrubber
+import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
+import com.mikebuyshouses.dncscrubber.filemanip.DataWriterFactory
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
 import com.mikebuyshouses.dncscrubber.utils.CommandLineParser
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
@@ -17,32 +17,16 @@ class App {
 
         println "Reading in the CSV file '${parser.getInputFilename()}'..."
         List<BatchSkipTracingDataRowModel> csvData = new CSVSheetReader(BatchSkipTracingDataRowModel.class)
-            .read(this.GetInputCsvFileName(parser));
+            .read(FileUtils.GetInputCsvFileName(parser.getInputFilename()));
 
         println "Scrubbing the DNC records...";
         List<BatchSkipTracingDataRowModel> scrubbedCsvData = new DNCScrubber().scrubCsvData(csvData);
 
-        // TODO: We need a feature to output to Excel files. To do that, we're going to need to somehow use the OpenCSV bean annotations...
         println "Outputting to output file '${parser.getOutputFilename()}'..."
-        new CSVSheetWriter(BatchSkipTracingDataRowModel.class)
-            .write(scrubbedCsvData, this.GetOutputCsvFileName(parser));
+        DataWriterFactory.GetDataWriter(FileUtils.GetFileExtension(parser.getOutputFilename()))
+            .write(scrubbedCsvData, parser.getOutputFilename());
 
         println "All done!";
-    }
-
-    private static String GetInputCsvFileName(CommandLineParser parser) {
-        if (parser.getInputFilename().endsWith(".csv"))
-            return parser.getInputFilename();
-
-        return FileUtils.ExcelToCsv(parser.getInputFilename())
-                .getPath();
-    }
-
-    private static String GetOutputCsvFileName(CommandLineParser parser) {
-        if (parser.getOutputFilename().endsWith(".csv"))
-            return parser.getOutputFilename();
-
-        return "${FileUtils.RemoveExtensionFromFileName(parser.getOutputFilename())}.csv";
     }
 }
 

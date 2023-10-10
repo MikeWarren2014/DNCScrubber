@@ -5,7 +5,7 @@ import com.opencsv.bean.CsvBindAndJoinByName
 import com.opencsv.bean.CsvBindByName
 import org.apache.commons.collections4.MultiValuedMap
 
-public class BaseDataRowModel {
+public abstract class BaseDataRowModel {
 	@CsvBindByName(column = "Input_First_Name")
 	String firstName;
 
@@ -16,6 +16,11 @@ public class BaseDataRowModel {
 	MultiValuedMap<String, String> rawPhoneData;
 
 	List<PhoneModel> childPhoneModels;
+
+	@CsvBindAndJoinByName(column = Constants.AddressEntryRegex, elementType = String.class)
+	MultiValuedMap<String, String> rawAddressData;
+
+	AddressModel propertyAddressModel, mailingAddressModel;
 
 	public String getFirstName() {
         return firstName;
@@ -31,4 +36,6 @@ public class BaseDataRowModel {
 	public void setLastName(String lastName) {
         this.lastName = lastName;
 	}
+
+	public abstract BaseDataRowModel buildChildAddressModels();
 }
