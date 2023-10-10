@@ -16,9 +16,6 @@ import com.mikebuyshouses.dncscrubber.utils.StringUtils
 import delight.fileupload.FileUpload
 import org.apache.commons.fileupload.FileItem
 
-import java.nio.file.Files
-import java.nio.file.Paths
-
 class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, APIGatewayProxyResponseEvent> {
 
     public static final String MultipartContentType = "multipart/form-data";

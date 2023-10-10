@@ -19,7 +19,4 @@ public final class Constants {
 
 	public static final String PhoneEntryRegex = "Phone\\d+_.+";
 	public static final String AddressEntryRegex = ".*(Address|City|State|Zip)";
-
-	// TODO: this should be in a properties file, that AWS Lambda can handle
-	public static final String EfsMountPath = '/mnt/dncScrubber';
 }

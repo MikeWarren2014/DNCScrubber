@@ -4,11 +4,21 @@ import com.mikebuyshouses.dncscrubber.constants.Constants
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
 
 class PathProvider {
+    final String basePath;
+
+    PathProvider() {
+        this.basePath = '/mnt/dncScrubber';
+    }
+
+    PathProvider(String basePath) {
+        this.basePath = basePath
+    }
+
     String getBaseInputPath() {
-        return "${Constants.EfsMountPath}/${FileUtils.InputPathPart}";
+        return "${this.basePath}/${FileUtils.InputPathPart}";
     }
 
     String getBaseOutputPath() {
-        return "${Constants.EfsMountPath}/${FileUtils.OutputPathPart}";
+        return "${this.basePath}/${FileUtils.OutputPathPart}";
     }
 }

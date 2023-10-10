@@ -4,11 +4,8 @@
 package com.mikebuyshouses.dncscrubber
 
 import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetReader
-import com.mikebuyshouses.dncscrubber.csvmanip.CSVSheetWriter
 import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
-import com.mikebuyshouses.dncscrubber.filemanip.DataWriter
 import com.mikebuyshouses.dncscrubber.filemanip.DataWriterFactory
-import com.mikebuyshouses.dncscrubber.filemanip.ExcelDataWriter
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
 import com.mikebuyshouses.dncscrubber.utils.CommandLineParser
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
@@ -20,24 +17,16 @@ class App {
 
         println "Reading in the CSV file '${parser.getInputFilename()}'..."
         List<BatchSkipTracingDataRowModel> csvData = new CSVSheetReader(BatchSkipTracingDataRowModel.class)
-            .read(this.GetInputCsvFileName(parser));
+            .read(FileUtils.GetInputCsvFileName(parser.getInputFilename()));
 
         println "Scrubbing the DNC records...";
         List<BatchSkipTracingDataRowModel> scrubbedCsvData = new DNCScrubber().scrubCsvData(csvData);
 
         println "Outputting to output file '${parser.getOutputFilename()}'..."
-        this.GetDataWriter(parser.getOutputFilename())
+        DataWriterFactory.GetDataWriter(FileUtils.GetFileExtension(parser.getOutputFilename()))
             .write(scrubbedCsvData, parser.getOutputFilename());
 
         println "All done!";
-    }
-
-    private static String GetInputCsvFileName(CommandLineParser parser) {
-        return FileUtils.GetInputCsvFileName(parser.getInputFilename());
-    }
-
-    private static DataWriter GetDataWriter(String outputFileName) {
-        return DataWriterFactory.GetDataWriter(outputFileName.substring(outputFileName.lastIndexOf('.') + 1));
     }
 }
 
