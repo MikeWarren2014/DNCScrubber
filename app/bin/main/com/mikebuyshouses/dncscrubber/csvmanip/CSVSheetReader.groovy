@@ -11,7 +11,7 @@ import groovy.transform.InheritConstructors
 
 @InheritConstructors
 public class CSVSheetReader extends CSVIO {
-	public static int FirstPhoneEntryNumber;
+	public static int FirstPhoneEntryNumber = 0;
 
 	public List<BaseDataRowModel> read(String fileName) {
 
@@ -41,7 +41,7 @@ public class CSVSheetReader extends CSVIO {
 			dataRowModel.with { BaseDataRowModel model ->
 				model.childPhoneModels = PhoneModel.ExtractFromRawPhoneData(model.rawPhoneData);
 
-				return model;
+				return model.buildChildAddressModels();
 			}
 		}
 

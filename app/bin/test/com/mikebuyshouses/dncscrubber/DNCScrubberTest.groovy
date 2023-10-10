@@ -1,10 +1,13 @@
 package com.mikebuyshouses.dncscrubber
 
-import com.mikebuyshouses.dncscrubber.csvmanip.DNCScrubber
+import com.mikebuyshouses.dncscrubber.datamanip.DNCScrubber
 import com.mikebuyshouses.dncscrubber.enums.PhoneTypes
+import com.mikebuyshouses.dncscrubber.models.AddressModel
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.BatchSkipTracingDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
+import com.mikebuyshouses.dncscrubber.models.TestDataRowModel
+import org.apache.poi.ss.formula.functions.Address
 import spock.lang.Specification
 
 class DNCScrubberTest extends Specification {
@@ -14,7 +17,24 @@ class DNCScrubberTest extends Specification {
                 new BatchSkipTracingDataRowModel(
                         firstName: "First",
                         lastName: "TestUser",
-                        propertyAddress: "1234 Main Street",
+                        propertyAddressModel: new AddressModel(
+                                address: "1234 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
+                        inputMailingAddressModel: new AddressModel(
+                                address: "1000 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
+                        mailingAddressModel: new AddressModel(
+                                address: "1000 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
                         childPhoneModels: [
                                 new PhoneModel(
                                         isDNC: false,
@@ -33,7 +53,24 @@ class DNCScrubberTest extends Specification {
                 new BatchSkipTracingDataRowModel(
                         firstName: "Empty",
                         lastName: "Record",
-                        propertyAddress: "1243 Main Street",
+                        propertyAddressModel: new AddressModel(
+                                address: "1243 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
+                        inputMailingAddressModel: new AddressModel(
+                                address: "1001 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
+                        mailingAddressModel: new AddressModel(
+                                address: "1001 Main Street",
+                                city: "Indianapolis",
+                                state: "IN",
+                                zip: "46220",
+                        ),
                         childPhoneModels: [],
                 ),
                 new BatchSkipTracingDataRowModel(
@@ -60,7 +97,7 @@ class DNCScrubberTest extends Specification {
 
     def "scrubDataRow() should successfully remove child PhoneModels"() {
         setup:
-        BaseDataRowModel model = new BaseDataRowModel(
+        TestDataRowModel model = new TestDataRowModel(
             firstName: "test",
             lastName: "user",
                 childPhoneModels: [
@@ -80,7 +117,7 @@ class DNCScrubberTest extends Specification {
         )
 
         when:
-        BaseDataRowModel cleanedModel = new DNCScrubber().scrubDataRow(model);
+        TestDataRowModel cleanedModel = (TestDataRowModel)new DNCScrubber().scrubDataRow(model);
 
         then:
         cleanedModel.childPhoneModels.size() == 1

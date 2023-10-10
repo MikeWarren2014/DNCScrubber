@@ -67,6 +67,8 @@ public final class FileUtils {
                 parentDirectory = new File('..')
 
             parentDirectory.mkdirs();
+            if (!parentDirectory.exists())
+                throw new IOException("Could not create parent directory '${parentDirectory.getAbsolutePath()}'");
             file.createNewFile();
         }
 
@@ -74,11 +76,15 @@ public final class FileUtils {
     }
 
     public static String GetFileExtension(File file) {
-        Matcher matcher = file.getName() =~ /(\.[^.]+)$/;
+        return this.GetFileExtension(file.getPath());
+    }
+
+    public static String GetFileExtension(String filePath) {
+        Matcher matcher = filePath =~ /^.*\.(?<extension>[^.]+)$/;
 
         if (!matcher.matches())
-            throw new IllegalArgumentException("File '${file.getName()}' does not have extension!");
+            throw new IllegalArgumentException("File '${filePath}' does not have extension!");
 
-        return matcher.group(0);
+        return matcher.group('extension');
     }
 }
