@@ -109,4 +109,4 @@ app/.project
 app/.settings/**/*
 
 # Ignore SAM build artifacts
-.aws-sam/
+**/.aws-sam/
