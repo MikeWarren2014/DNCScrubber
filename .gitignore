@@ -110,3 +110,6 @@ app/.settings/**/*
 
 # Ignore SAM build artifacts
 **/.aws-sam/
+
+# Ignore bin folder
+app/bin
