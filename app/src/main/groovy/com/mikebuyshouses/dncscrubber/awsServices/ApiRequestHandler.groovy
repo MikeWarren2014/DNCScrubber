@@ -107,10 +107,8 @@ class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
     }
 
     Map<String, String> createResponseHeaders(String outputFileName) {
-        final String contentTypeHeader = this.getContentTypeHeader(outputFileName)
         return [
-                ('Accept') : contentTypeHeader,
-                ('Content-Type') : contentTypeHeader,
+                ('Content-Type') : this.getContentTypeHeader(outputFileName),
                 ('Content-Disposition') : "attachment; filename=${outputFileName}".toString(),
         ]
     }
