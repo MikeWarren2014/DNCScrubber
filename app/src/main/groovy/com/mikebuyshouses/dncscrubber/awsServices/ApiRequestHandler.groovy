@@ -39,6 +39,9 @@ class ApiRequestHandler implements RequestHandler<APIGatewayProxyRequestEvent, A
         if (StringUtils.IsNullOrEmpty(requestBodyModel.outputFileExtension))
             return this.createBadRequestResponseEvent("Missing the output file extension from request");
 
+        if (!requestBodyModel.outputFileExtension.toLowerCase().matches(/^(csv|xlsx)$/))
+            return this.createBadRequestResponseEvent("Output file extension '${requestBodyModel.outputFileExtension}' not supported");
+
         File outputFile = this.handleValidRequestBodyModel(requestBodyModel, logger);
 
         return new APIGatewayProxyResponseEvent()
