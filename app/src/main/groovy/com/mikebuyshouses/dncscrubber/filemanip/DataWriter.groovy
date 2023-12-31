@@ -10,6 +10,8 @@ import com.mikebuyshouses.dncscrubber.utils.FileUtils
 import com.mikebuyshouses.dncscrubber.utils.StringUtils
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap
 
+import java.util.regex.Matcher
+
 public trait DataWriter {
 
     public void write(List<BaseDataRowModel> dataRowModels, String outputFileName) {
@@ -21,28 +23,47 @@ public trait DataWriter {
     }
 
     private void prepareDataRowModels(List<BaseDataRowModel> dataRowModels) {
-        YesNoBooleanConverter booleanConverter = new YesNoBooleanConverter();
-
-        dataRowModels.each { BaseDataRowModel dataRowModel ->
+        dataRowModels.eachWithIndex { BaseDataRowModel dataRowModel, int idx ->
             if (dataRowModel.rawPhoneData != null)
                 dataRowModel.rawPhoneData.clear();
             else
                 dataRowModel.rawPhoneData = new ArrayListValuedHashMap<>();
 
-            dataRowModel.childPhoneModels.eachWithIndex{ PhoneModel childModel, int idx ->
-                final int entryNumber = CSVSheetReader.FirstPhoneEntryNumber + idx;
+            List<String> allRawPhoneDataColumns = dataRowModels.max {BaseDataRowModel model -> return model.rawPhoneData.size()}
+                    .rawPhoneData
+                    .keySet()
+                    .toList()
+                    .toSorted { a, b ->
+                        Matcher matcherA = (a =~ Constants.PhoneEntryRegex)
+                        Matcher matcherB = (b =~ Constants.PhoneEntryRegex)
 
-                dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.DncKeyPart}".toString(),
-                        booleanConverter.convertBooleanToString(childModel.isDNC));
-                dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.ScoreKeyPart}".toString(),
-                        childModel.score.toString());
-                dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.TypeKeyPart}".toString(),
-                        childModel.phoneType.textValue);
-                dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.NumberKeyPart}".toString(),
-                        childModel.phoneNumber);
-                dataRowModel.rawPhoneData.put("Phone${entryNumber}_${Constants.DateKeyPart}".toString(),
-                        StringUtils.NullableObjectToString(childModel.date));
-            }
+                        if (!matcherA.matches())
+                            throw new Exception("We have a problem with raw phone data column '${a}'")
+                        if (!matcherB.matches())
+                            throw new Exception("We have a problem with raw phone data column '${b}'")
+
+                        int numA = matcherA.group(1).toInteger(),
+                            numB = matcherB.group(1).toInteger()
+
+                        if (numA != numB) {
+                            return numA <=> numB
+                        }
+                        return a <=> b
+                    }
+
+            this.prepareRawPhoneData(dataRowModel,
+{ BaseDataRowModel model, List<String> rawPhoneDataColumns ->
+                    if (idx > 0)
+                        return;
+
+                    rawPhoneDataColumns
+                        .subList(model.childPhoneModels.size() * 5, rawPhoneDataColumns.size())
+                        .each({ String columnName ->
+                            model.rawPhoneData.put(columnName, "");
+                        })
+                },
+                allRawPhoneDataColumns,
+            );
 
             if (dataRowModel.rawAddressData == null)
                 dataRowModel.rawAddressData = new ArrayListValuedHashMap<>();
@@ -51,16 +72,41 @@ public trait DataWriter {
             this.prepareRawAddressData(dataRowModel, dataRowModel.mailingAddressModel, Constants.MailingPart);
         }
     }
+    
+    private void prepareRawPhoneData(BaseDataRowModel model, Closure onPostPreparation, List<String> allRawPhoneDataColumns) {
+        YesNoBooleanConverter booleanConverter = new YesNoBooleanConverter();
+        
+        model.childPhoneModels.eachWithIndex{ PhoneModel childModel, int idx ->
+            final int entryNumber = CSVSheetReader.FirstPhoneEntryNumber + idx;
+
+            model.rawPhoneData.put("Phone${entryNumber}_${Constants.DncKeyPart}".toString(),
+                    booleanConverter.convertBooleanToString(childModel.isDNC));
+            model.rawPhoneData.put("Phone${entryNumber}_${Constants.ScoreKeyPart}".toString(),
+                    childModel.score.toString());
+            model.rawPhoneData.put("Phone${entryNumber}_${Constants.TypeKeyPart}".toString(),
+                    childModel.phoneType.textValue);
+            model.rawPhoneData.put("Phone${entryNumber}_${Constants.NumberKeyPart}".toString(),
+                    childModel.phoneNumber);
+            model.rawPhoneData.put("Phone${entryNumber}_${Constants.DateKeyPart}".toString(),
+                    StringUtils.NullableObjectToString(childModel.date));
+        }
+
+        onPostPreparation(model, allRawPhoneDataColumns);
+    }
 
     private void prepareRawAddressData(BaseDataRowModel model, AddressModel childAddressModel, String keyPrefix) {
-        model.rawAddressData.put("${keyPrefix}_Address".toString(),
-            childAddressModel.address);
-        model.rawAddressData.put("${keyPrefix}_City".toString(),
-            childAddressModel.city);
-        model.rawAddressData.put("${keyPrefix}_State".toString(),
-            childAddressModel.state);
-        model.rawAddressData.put("${keyPrefix}_Zip".toString(),
-            childAddressModel.zip);
+        if (!model.rawAddressData.containsKey("${keyPrefix}_Address".toString()))
+            model.rawAddressData.put("${keyPrefix}_Address".toString(),
+                childAddressModel.address);
+        if (!model.rawAddressData.containsKey("${keyPrefix}_City".toString()))
+            model.rawAddressData.put("${keyPrefix}_City".toString(),
+                childAddressModel.city);
+        if (!model.rawAddressData.containsKey("${keyPrefix}_State".toString()))
+            model.rawAddressData.put("${keyPrefix}_State".toString(),
+                childAddressModel.state);
+        if (!model.rawAddressData.containsKey("${keyPrefix}_Zip".toString()))
+            model.rawAddressData.put("${keyPrefix}_Zip".toString(),
+                childAddressModel.zip);
     }
 
     // TODO: we may need to phase this out for some S3/OutputStream stuff

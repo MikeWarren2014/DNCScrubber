@@ -57,7 +57,7 @@ dependencies {
     implementation 'org.apache.commons:commons-collections4:4.4'
 
     // https://mvnrepository.com/artifact/com.opencsv/opencsv
-    implementation 'com.opencsv:opencsv:5.8'
+    implementation 'com.opencsv:opencsv:5.9'
 
     // Use the awesome Spock testing and specification framework even with Java
     testImplementation 'org.spockframework:spock-core:2.0-groovy-3.0'
