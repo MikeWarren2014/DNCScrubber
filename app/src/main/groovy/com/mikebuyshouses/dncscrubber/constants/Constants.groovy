@@ -17,6 +17,6 @@ public final class Constants {
 	public static final String InputPropertyPart = "Input_Property";
 	public static final String MailingPart = "Mailing";
 
-	public static final String PhoneEntryRegex = "Phone\\d+_.+";
+	public static final String PhoneEntryRegex = "Phone(\\d+)_.+";
 	public static final String AddressEntryRegex = ".*(Address|City|State|Zip)";
 }
