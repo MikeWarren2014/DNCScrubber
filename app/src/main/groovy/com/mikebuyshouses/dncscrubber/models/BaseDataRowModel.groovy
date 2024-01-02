@@ -6,9 +6,11 @@ import com.opencsv.bean.CsvBindByName
 import org.apache.commons.collections4.MultiValuedMap
 
 public abstract class BaseDataRowModel {
+	// TODO: we should probably use OWNER_FIRST_NAME for this
 	@CsvBindByName(column = "Input_First_Name")
 	String firstName;
 
+	// TODO: we should probably use OWNER_LAST_NAME for this
 	@CsvBindByName(column = "Input_Last_Name")
 	String lastName;
 

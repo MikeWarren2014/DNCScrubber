@@ -7,10 +7,9 @@ import com.mikebuyshouses.dncscrubber.models.AddressModel
 import com.mikebuyshouses.dncscrubber.models.BaseDataRowModel
 import com.mikebuyshouses.dncscrubber.models.PhoneModel
 import com.mikebuyshouses.dncscrubber.utils.FileUtils
+import com.mikebuyshouses.dncscrubber.utils.ListUtils
 import com.mikebuyshouses.dncscrubber.utils.StringUtils
 import org.apache.commons.collections4.multimap.ArrayListValuedHashMap
-
-import java.util.regex.Matcher
 
 public trait DataWriter {
 
@@ -29,27 +28,10 @@ public trait DataWriter {
             else
                 dataRowModel.rawPhoneData = new ArrayListValuedHashMap<>();
 
-            List<String> allRawPhoneDataColumns = dataRowModels.max {BaseDataRowModel model -> return model.rawPhoneData.size()}
+            List<String> allRawPhoneDataColumns = ListUtils.SortPhoneColumnNamesList(dataRowModels.max { BaseDataRowModel model -> return model.rawPhoneData.size()}
                     .rawPhoneData
                     .keySet()
-                    .toList()
-                    .toSorted { a, b ->
-                        Matcher matcherA = (a =~ Constants.PhoneEntryRegex)
-                        Matcher matcherB = (b =~ Constants.PhoneEntryRegex)
-
-                        if (!matcherA.matches())
-                            throw new Exception("We have a problem with raw phone data column '${a}'")
-                        if (!matcherB.matches())
-                            throw new Exception("We have a problem with raw phone data column '${b}'")
-
-                        int numA = matcherA.group(1).toInteger(),
-                            numB = matcherB.group(1).toInteger()
-
-                        if (numA != numB) {
-                            return numA <=> numB
-                        }
-                        return a <=> b
-                    }
+                    .toList());
 
             this.prepareRawPhoneData(dataRowModel,
 { BaseDataRowModel model, List<String> rawPhoneDataColumns ->
@@ -70,13 +52,17 @@ public trait DataWriter {
 
             this.prepareRawAddressData(dataRowModel, dataRowModel.propertyAddressModel, Constants.InputPropertyPart);
             this.prepareRawAddressData(dataRowModel, dataRowModel.mailingAddressModel, Constants.MailingPart);
+
+            // TODO: we need to create BatchSkipTracingDataRowModel from each BaseDataRowModel, here...
         }
     }
     
     private void prepareRawPhoneData(BaseDataRowModel model, Closure onPostPreparation, List<String> allRawPhoneDataColumns) {
         YesNoBooleanConverter booleanConverter = new YesNoBooleanConverter();
         
-        model.childPhoneModels.eachWithIndex{ PhoneModel childModel, int idx ->
+        model.childPhoneModels
+//            .subList(0, Math.max(model.childPhoneModels.size(), Constants.ChildPhoneNumberCutoff))
+            .eachWithIndex{ PhoneModel childModel, int idx ->
             final int entryNumber = CSVSheetReader.FirstPhoneEntryNumber + idx;
 
             model.rawPhoneData.put("Phone${entryNumber}_${Constants.DncKeyPart}".toString(),

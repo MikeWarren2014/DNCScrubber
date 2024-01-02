@@ -141,4 +141,8 @@ class DataWriterTest extends Specification {
         return map.keySet()
                 .asList();
     }
+
+    def "should prepare the raw phone data, with that raw phone data sorted by number and then alphabetically"() {
+        throw new Exception("not yet implemented");
+    }
 }
