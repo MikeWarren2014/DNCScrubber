@@ -2,7 +2,8 @@ package com.mikebuyshouses.dncscrubber.enums
 
 public enum PhoneTypes {
 	LandLine("Land Line"),
-	Mobile("Mobile");
+	Mobile("Mobile"),
+	Unknown("");
 	
 	final String textValue;
 

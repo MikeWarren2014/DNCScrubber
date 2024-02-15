@@ -23,12 +23,9 @@ public trait DataWriter {
     }
 
     private void prepareDataRowModels(List<BaseDataRowModel> dataRowModels) {
-        dataRowModels.eachWithIndex { BaseDataRowModel dataRowModel, int idx ->
-            if (dataRowModel.rawPhoneData != null)
-                dataRowModel.rawPhoneData.clear();
-            else
-                dataRowModel.rawPhoneData = new ArrayListValuedHashMap<>();
+        this.initRawPhoneData(dataRowModels);
 
+        dataRowModels.eachWithIndex { BaseDataRowModel dataRowModel, int idx ->
             List<String> allRawPhoneDataColumns = dataRowModels.max {BaseDataRowModel model -> return model.rawPhoneData.size()}
                     .rawPhoneData
                     .keySet()
@@ -72,23 +69,48 @@ public trait DataWriter {
             this.prepareRawAddressData(dataRowModel, dataRowModel.mailingAddressModel, Constants.MailingPart);
         }
     }
-    
+
+    private void initRawPhoneData(List<BaseDataRowModel> dataRowModels) {
+        dataRowModels.each { BaseDataRowModel dataRowModel ->
+            if (dataRowModel.rawPhoneData == null) {
+                dataRowModel.rawPhoneData = new ArrayListValuedHashMap<>();
+            }
+        }
+    }
+
     private void prepareRawPhoneData(BaseDataRowModel model, Closure onPostPreparation, List<String> allRawPhoneDataColumns) {
         YesNoBooleanConverter booleanConverter = new YesNoBooleanConverter();
         
         model.childPhoneModels.eachWithIndex{ PhoneModel childModel, int idx ->
             final int entryNumber = CSVSheetReader.FirstPhoneEntryNumber + idx;
 
-            model.rawPhoneData.put("Phone${entryNumber}_${Constants.DncKeyPart}".toString(),
+            final String currentDncColumn = "Phone${entryNumber}_${Constants.DncKeyPart}".toString(),
+                currentScoreColumn = "Phone${entryNumber}_${Constants.ScoreKeyPart}".toString(),
+                currentTypeColumn = "Phone${entryNumber}_${Constants.TypeKeyPart}".toString(),
+                currentPhoneNumberColumn = "Phone${entryNumber}_${Constants.NumberKeyPart}".toString(),
+                currentDateColumn = "Phone${entryNumber}_${Constants.DateKeyPart}".toString();
+
+            model.rawPhoneData.put(currentDncColumn,
                     booleanConverter.convertBooleanToString(childModel.isDNC));
-            model.rawPhoneData.put("Phone${entryNumber}_${Constants.ScoreKeyPart}".toString(),
+            model.rawPhoneData.put(currentScoreColumn,
                     childModel.score.toString());
-            model.rawPhoneData.put("Phone${entryNumber}_${Constants.TypeKeyPart}".toString(),
+            model.rawPhoneData.put(currentTypeColumn,
                     childModel.phoneType.textValue);
-            model.rawPhoneData.put("Phone${entryNumber}_${Constants.NumberKeyPart}".toString(),
+            model.rawPhoneData.put(currentPhoneNumberColumn,
                     childModel.phoneNumber);
-            model.rawPhoneData.put("Phone${entryNumber}_${Constants.DateKeyPart}".toString(),
+            model.rawPhoneData.put(currentDateColumn,
                     StringUtils.NullableObjectToString(childModel.date));
+
+            [
+                    currentDncColumn,
+                    currentScoreColumn,
+                    currentTypeColumn,
+                    currentPhoneNumberColumn,
+                    currentDateColumn,
+            ].each { String column ->
+                if (!allRawPhoneDataColumns.contains(column))
+                    allRawPhoneDataColumns.add(column);
+            }
         }
 
         onPostPreparation(model, allRawPhoneDataColumns);
