@@ -82,8 +82,6 @@ public class PhoneModel {
 	public static List<PhoneModel> ExtractFromRawPhoneData(MultiValuedMap<String,Object> rawPhoneData) {
 		List<PhoneModel> phoneModels = [];
 
-		PhoneModel model = new PhoneModel();
-
 		List<String> sortedMapKeys = rawPhoneData.keySet()
 			// SOURCE: Phind AI
 			.sort { String a, String b ->
@@ -92,7 +90,10 @@ public class PhoneModel {
 				return aNum <=> bNum ?: a <=> b
 			}
 		sortedMapKeys.eachWithIndex({ String key, int idx ->
-			model = this.BuildPhoneModel(model, rawPhoneData.get(key)[0], key);
+			PhoneModel model = this.BuildPhoneModel(new PhoneModel(), rawPhoneData.get(key)[0], key);
+
+			if (model.getPhoneType() == null)
+				model.setPhoneType(PhoneTypes.Unknown);
 
 			if ((idx < sortedMapKeys.size() - 1) && 
 				(NumberUtils.ExtractNumber(sortedMapKeys[idx + 1]) == NumberUtils.ExtractNumber(sortedMapKeys[idx])))
@@ -100,8 +101,6 @@ public class PhoneModel {
 
 			if (!StringUtils.IsNullOrEmpty(model.phoneNumber))
 				phoneModels.add(model);
-
-			model = new PhoneModel();
 		})
 
 		return phoneModels;
