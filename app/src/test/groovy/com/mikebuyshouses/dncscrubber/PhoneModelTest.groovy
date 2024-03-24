@@ -33,13 +33,7 @@ class PhoneModelTest extends Specification {
 			('Phone3_Number'):[3179265508]
 		]
 
-		MultiValuedMap<String, Object> map = new ArrayListValuedHashMap<>()
-
-		literal.each { key, value ->
-			value.each { item ->
-				map.put(key, item)
-			}
-		}
+		MultiValuedMap<String, Object> map = this.createMultiValuedMapFrom(literal);
 
 		when:
 		List<PhoneModel> phoneModelList = PhoneModel.ExtractFromRawPhoneData(map)
@@ -74,18 +68,7 @@ class PhoneModelTest extends Specification {
 				('Phone3_Number'):[3175555508],
 		]
 
-		MultiValuedMap<String, Object> map = new ArrayListValuedHashMap<>()
-
-		literal.each { key, value ->
-			if (value.size() == 0) {
-				map.put(key, null)
-				return
-			}
-
-			value.each { item ->
-				map.put(key, item)
-			}
-		}
+		MultiValuedMap<String, Object> map = this.createMultiValuedMapFrom(literal);
 
 		when:
 			List<String> keyList = map.keySet()
@@ -117,9 +100,36 @@ class PhoneModelTest extends Specification {
 				('Phone1_Score'): [90],
 		]
 
+		MultiValuedMap<String, Object> map = this.createMultiValuedMapFrom(literal);
+
+		when:
+		List<PhoneModel> phoneModelList = PhoneModel.ExtractFromRawPhoneData(map)
+
+		then:
+		phoneModelList[0].getPhoneNumber() == '3175550123'
+		phoneModelList[1].getPhoneNumber() == '3175550157'
+	}
+
+	def "ExtractPhoneNumber() should be able to handle unknown phone types"() {
+		setup:
+		def literal = [
+				('Phone0_DNC'): ['No'],
+				('Phone0_Number'): ['9991234567'],
+		]
+
+		MultiValuedMap<String, Object> map = this.createMultiValuedMapFrom(literal);
+
+		when:
+		List<PhoneModel> phoneModelList = PhoneModel.ExtractFromRawPhoneData(map);
+
+		then:
+		phoneModelList[0].getPhoneType() != null;
+	}
+
+	private MultiValuedMap<String, Object> createMultiValuedMapFrom(Map originalMap) {
 		MultiValuedMap<String, Object> map = new ArrayListValuedHashMap<>()
 
-		literal.each { key, value ->
+		originalMap.each { key, value ->
 			if (value.size() == 0) {
 				map.put(key, null)
 				return
@@ -130,11 +140,7 @@ class PhoneModelTest extends Specification {
 			}
 		}
 
-		when:
-		List<PhoneModel> phoneModelList = PhoneModel.ExtractFromRawPhoneData(map)
-
-		then:
-		phoneModelList[0].getPhoneNumber() == '3175550123'
-		phoneModelList[1].getPhoneNumber() == '3175550157'
+		return map;
 	}
+
 }

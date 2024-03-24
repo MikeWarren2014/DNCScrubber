@@ -80,6 +80,8 @@ public trait DataWriter {
 
     private void prepareRawPhoneData(BaseDataRowModel model, Closure onPostPreparation, List<String> allRawPhoneDataColumns) {
         YesNoBooleanConverter booleanConverter = new YesNoBooleanConverter();
+
+        model.rawPhoneData.clear();
         
         model.childPhoneModels.eachWithIndex{ PhoneModel childModel, int idx ->
             final int entryNumber = CSVSheetReader.FirstPhoneEntryNumber + idx;

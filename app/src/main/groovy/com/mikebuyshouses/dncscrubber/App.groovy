@@ -13,7 +13,10 @@ import com.mikebuyshouses.dncscrubber.utils.FileUtils
 class App {
     static void main(String[] args) {
         CommandLineParser parser = new CommandLineParser();
-        parser.parseArgs(args);
+//        parser.parseArgs(args);
+
+        parser.inputFilename = 'app/Presheriff sale list Feb 2024.csv';
+        parser.outputFilename = 'app/output1.csv';
 
         println "Reading in the CSV file '${parser.getInputFilename()}'..."
         List<BatchSkipTracingDataRowModel> csvData = new CSVSheetReader(BatchSkipTracingDataRowModel.class)
