@@ -126,7 +126,7 @@ class PhoneModelTest extends Specification {
 		phoneModelList[0].getPhoneType() != null;
 	}
 
-	private MultiValuedMap<String, Object> createMultiValuedMapFrom(Map originalMap) {
+	private MultiValuedMap<String, Object> createMultiValuedMapFrom(Map<String, Object> originalMap) {
 		MultiValuedMap<String, Object> map = new ArrayListValuedHashMap<>()
 
 		originalMap.each { key, value ->

@@ -89,18 +89,21 @@ public class PhoneModel {
 				int bNum = NumberUtils.ExtractNumber(b);
 				return aNum <=> bNum ?: a <=> b
 			}
+
+		PhoneModel model = new PhoneModel();
 		sortedMapKeys.eachWithIndex({ String key, int idx ->
-			PhoneModel model = this.BuildPhoneModel(new PhoneModel(), rawPhoneData.get(key)[0], key);
+			model = this.BuildPhoneModel(model, rawPhoneData.get(key)[0], key);
 
 			if (model.getPhoneType() == null)
 				model.setPhoneType(PhoneTypes.Unknown);
 
-			if ((idx < sortedMapKeys.size() - 1) && 
+			if ((idx < sortedMapKeys.size() - 1) &&
 				(NumberUtils.ExtractNumber(sortedMapKeys[idx + 1]) == NumberUtils.ExtractNumber(sortedMapKeys[idx])))
 				return;
 
 			if (!StringUtils.IsNullOrEmpty(model.phoneNumber))
 				phoneModels.add(model);
+			model = new PhoneModel();
 		})
 
 		return phoneModels;
